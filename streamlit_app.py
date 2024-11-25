@@ -1,46 +1,47 @@
-import streamlit as st
+3import streamlit as st
 import pandas as pd
 import plotly.express as px
 
 # Configuration de la page
 st.set_page_config(page_title="Mini-Site NBA Combine", page_icon="🏀", layout="wide")
 
-# CSS intégré avec thème NBA
+# CSS intégré avec thème professionnel
 st.markdown("""
     <style>
     body {
         font-family: 'Arial', sans-serif;
-        background-color: #121212;
-        color: #ffffff;
-    }
-    h1, h2, h3 {
-        color: #FF5733;
-        text-transform: uppercase;
-        font-weight: bold;
+        background-color: #f9f9f9;
+        color: #333333;
     }
     .stApp {
-        background-color: #121212;
+        background-color: #ffffff;
     }
     .sidebar .sidebar-content {
-        background-color: #333;
+        background-color: #f1f1f1;
         padding: 20px;
         border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2, h3 {
+        color: #004080;
+        font-weight: bold;
     }
     .stButton>button {
-        background-color: #FF5733;
+        background-color: #004080;
         color: white;
         border: none;
         padding: 10px 20px;
-        border-radius: 10px;
+        border-radius: 5px;
         font-weight: bold;
     }
     .stButton>button:hover {
-        background-color: #C70039;
+        background-color: #00264d;
     }
     .plotly-graph-div {
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
-        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
         overflow: hidden;
+        margin-bottom: 20px;
     }
     table {
         width: 100%;
@@ -48,23 +49,24 @@ st.markdown("""
         margin-top: 20px;
     }
     th, td {
-        border: 1px solid #444;
+        border: 1px solid #dddddd;
         padding: 10px;
         text-align: center;
-        color: #fff;
     }
     th {
-        background-color: #FF5733;
+        background-color: #004080;
         color: white;
     }
-    .sidebar .sidebar-content h3 {
-        color: #FF5733;
+    .stDataFrame {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
     section {
         padding: 20px;
-        background-color: #222;
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         margin-bottom: 20px;
     }
     </style>
@@ -113,6 +115,25 @@ elif menu == "Visualisations":
             fig2 = px.scatter(data, x='HEIGHT W/O SHOES', y='WEIGHT (LBS)', title="Relation entre Poids et Taille")
             st.plotly_chart(fig2)
 
+    # Graphique de la répartition de l'age
+    st.write("### 🎂 Répartition des âges des joueurs")
+    if 'AGE' in data.columns:
+        fig3 = px.histogram(data, x='AGE', nbins=15, title="Répartition des Âges des Joueurs NBA")
+        st.plotly_chart(fig3)
+
+    # Box plot pour analyser la répartition des poids selon les positions
+    st.write("### 📦 Répartition du Poids selon les Positions")
+    if 'POSITION' in data.columns and 'WEIGHT (LBS)' in data.columns:
+        fig4 = px.box(data, x='POSITION', y='WEIGHT (LBS)', title="Répartition du Poids selon les Positions")
+        st.plotly_chart(fig4)
+
+    # Heatmap des corrélations entre les caractéristiques physiques
+    st.write("### 🔥 Heatmap des Corrélations entre les Caractéristiques Physiques")
+    if all(col in data.columns for col in ['HEIGHT W/O SHOES', 'WEIGHT (LBS)', 'BODY FAT %', 'WINGSPAN']):
+        corr_matrix = data[['HEIGHT W/O SHOES', 'WEIGHT (LBS)', 'BODY FAT %', 'WINGSPAN']].corr()
+        fig5 = px.imshow(corr_matrix, title="Heatmap des Corrélations", color_continuous_scale='Viridis')
+        st.plotly_chart(fig5)
+
 # Section 3 : Statistiques descriptives
 elif menu == "Statistiques descriptives":
     st.title("📈 Statistiques descriptives des données NBA Combine")
@@ -121,5 +142,5 @@ elif menu == "Statistiques descriptives":
 
     st.write("### 🏃‍♂️ Distribution du Body Fat %")
     if 'BODY FAT %' in data.columns:
-        fig3 = px.histogram(data, x='BODY FAT %', nbins=20, title="Distribution du Body Fat % des Joueurs")
-        st.plotly_chart(fig3)
+        fig6 = px.histogram(data, x='BODY FAT %', nbins=20, title="Distribution du Body Fat % des Joueurs")
+        st.plotly_chart(fig6)
