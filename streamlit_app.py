@@ -88,7 +88,7 @@ def load_data(url):
 data = load_data(url)
 
 # Menu pour naviguer entre les sections
-menu = st.sidebar.selectbox("Menu", ["Vue d'ensemble", "Visualisations", "Statistiques descriptives"])
+menu = st.sidebar.selectbox("Menu", ["Vue d'ensemble", "Visualisations", "Statistiques descriptives", "Analyses Avancées"])
 
 # Section 1 : Vue d'ensemble
 if menu == "Vue d'ensemble":
@@ -101,7 +101,6 @@ if menu == "Vue d'ensemble":
 # Section 2 : Visualisations
 elif menu == "Visualisations":
     st.title("Visualisations des données")
-
     col1, col2 = st.columns(2)
 
     with col1:
@@ -127,3 +126,43 @@ elif menu == "Statistiques descriptives":
     if 'BODY FAT %' in data.columns:
         fig3 = px.histogram(data, x='BODY FAT %', nbins=20, title="Distribution du Body Fat % des Joueurs")
         st.plotly_chart(fig3)
+
+# Nouvelle Section : Analyses Avancées
+elif menu == "Analyses Avancées":
+    st.title("Analyses Avancées des Joueurs NBA")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write("### Distribution de la Taille (Inches)")
+        if 'Height (Inches)' in data.columns:
+            fig1 = px.histogram(data, x='Height (Inches)', nbins=20, title="Distribution de la Taille des Joueurs")
+            st.plotly_chart(fig1)
+        else:
+            st.warning("La colonne 'Height (Inches)' n'est pas présente dans le dataset.")
+
+    with col2:
+        st.write("### Poids vs Taille")
+        if 'Height (Inches)' in data.columns and 'Weight (LBS)' in data.columns:
+            fig2 = px.scatter(data, x='Height (Inches)', y='Weight (LBS)', title="Relation entre Poids et Taille")
+            st.plotly_chart(fig2)
+        else:
+            st.warning("Les colonnes 'Height (Inches)' et/ou 'Weight (LBS)' ne sont pas présentes dans le dataset.")
+
+    col3, col4 = st.columns(2)
+    with col3:
+        st.write("### Boxplot de la Taille par Année de Draft")
+        if 'Draft Year' in data.columns and 'Height (Inches)' in data.columns:
+            fig3 = px.box(data, x='Draft Year', y='Height (Inches)', title="Distribution de la Taille par Année de Draft")
+            st.plotly_chart(fig3)
+        else:
+            st.warning("Les colonnes 'Draft Year' et/ou 'Height (Inches)' ne sont pas présentes dans le dataset.")
+
+    with col4:
+        st.write("### Répartition des Positions")
+        if 'Position' in data.columns:
+            position_counts = data['Position'].value_counts().reset_index()
+            position_counts.columns = ['Position', 'Nombre']
+            fig4 = px.pie(position_counts, values='Nombre', names='Position', title="Répartition des Positions des Joueurs")
+            st.plotly_chart(fig4)
+        else:
+            st.warning("La colonne 'Position' n'est pas présente dans le dataset.")
