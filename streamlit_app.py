@@ -5,42 +5,42 @@ import plotly.express as px
 # Configuration de la page
 st.set_page_config(page_title="Mini-Site NBA Combine", page_icon="🏀", layout="wide")
 
-# CSS intégré
+# CSS intégré avec thème NBA
 st.markdown("""
     <style>
     body {
-        font-family: sans-serif;
-        background-color: #f4f4f4;
-        color: #333;
-        margin: 0;
-        padding: 0;
-        background-image: url('https://images.unsplash.com/photo-1606788075765-1f60e5b9a5cd');
-        background-size: cover;
-        background-attachment: fixed;
+        font-family: 'Arial', sans-serif;
+        background-color: #121212;
+        color: #ffffff;
     }
     h1, h2, h3 {
-        color: #007bff;
+        color: #FF5733;
+        text-transform: uppercase;
+        font-weight: bold;
     }
     .stApp {
-        background-color: rgba(244, 244, 244, 0.9);
-        padding: 10px;
-        border-radius: 10px;
+        background-color: #121212;
     }
     .sidebar .sidebar-content {
-        background-color: #e9ecef;
+        background-color: #333;
         padding: 20px;
         border-radius: 10px;
     }
     .stButton>button {
-        background-color: #007bff;
+        background-color: #FF5733;
         color: white;
         border: none;
         padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
+        border-radius: 10px;
+        font-weight: bold;
     }
     .stButton>button:hover {
-        background-color: #0056b3;
+        background-color: #C70039;
+    }
+    .plotly-graph-div {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+        border-radius: 15px;
+        overflow: hidden;
     }
     table {
         width: 100%;
@@ -48,32 +48,23 @@ st.markdown("""
         margin-top: 20px;
     }
     th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
+        border: 1px solid #444;
+        padding: 10px;
+        text-align: center;
+        color: #fff;
     }
     th {
-        background-color: #f2f2f2;
+        background-color: #FF5733;
+        color: white;
     }
-    .plotly-graph-div {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 5px;
-        margin-bottom: 20px;
-    }
-    h1 {
-        font-size: 2.5em;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-    h2 {
-        margin-top: 30px;
-        margin-bottom: 15px;
+    .sidebar .sidebar-content h3 {
+        color: #FF5733;
     }
     section {
         padding: 20px;
-        background-color: #fff;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: #222;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
         margin-bottom: 20px;
     }
     </style>
@@ -81,6 +72,7 @@ st.markdown("""
 
 # URL du fichier Google Sheets en format CSV
 gsheetid = "1BM2uotZg84vpEcyHJcoC-6uw6nJGwByImclWzX94MRo"
+sheetid = "1755484415"
 url = f'https://docs.google.com/spreadsheets/d/{gsheetid}/export?format=csv'
 
 # Fonction pour charger les données
@@ -93,11 +85,11 @@ def load_data(url):
 data = load_data(url)
 
 # Menu pour naviguer entre les sections
-menu = st.sidebar.selectbox("Menu", ["Vue d'ensemble", "Visualisations", "Statistiques descriptives"])
+menu = st.sidebar.selectbox("🏀 Menu", ["Vue d'ensemble", "Visualisations", "Statistiques descriptives"])
 
 # Section 1 : Vue d'ensemble
 if menu == "Vue d'ensemble":
-    st.title("Vue d'ensemble des données NBA Combine")
+    st.title("🏀 Vue d'ensemble des données NBA Combine")
     st.write("### Aperçu des données")
     st.write(data.head())
     st.write("### Noms des colonnes")
@@ -105,37 +97,29 @@ if menu == "Vue d'ensemble":
 
 # Section 2 : Visualisations
 elif menu == "Visualisations":
-    st.title("Visualisations des données")
+    st.title("📊 Visualisations des données")
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.write("### Distribution de la Taille (Inches)")
+        st.write("### 🏀 Distribution de la Taille (Inches)")
         if 'HEIGHT W/O SHOES' in data.columns:
-            fig1 = px.histogram(data, x='HEIGHT W/O SHOES', nbins=20, title="Distribution de la Taille des Joueurs", color_discrete_sequence=['#007bff'])
-            st.plotly_chart(fig1, use_container_width=True)
+            fig1 = px.histogram(data, x='HEIGHT W/O SHOES', nbins=20, title="Distribution de la Taille des Joueurs")
+            st.plotly_chart(fig1)
 
     with col2:
-        st.write("### Poids vs Taille")
+        st.write("### 💪 Poids vs Taille")
         if 'HEIGHT W/O SHOES' in data.columns and 'WEIGHT (LBS)' in data.columns:
-            fig2 = px.scatter(data, x='HEIGHT W/O SHOES', y='WEIGHT (LBS)', title="Relation entre Poids et Taille", color='POSITION')
-            st.plotly_chart(fig2, use_container_width=True)
-
-    # Nouveau graphique interactif
-    st.write("### Moyenne des statistiques par Position")
-    if 'POSITION' in data.columns and 'HEIGHT W/O SHOES' in data.columns:
-        avg_stats = data.groupby('POSITION')[['HEIGHT W/O SHOES', 'WEIGHT (LBS)']].mean().reset_index()
-        fig3 = px.bar(avg_stats, x='POSITION', y='HEIGHT W/O SHOES', title='Taille Moyenne par Position', color='POSITION')
-        st.plotly_chart(fig3, use_container_width=True)
+            fig2 = px.scatter(data, x='HEIGHT W/O SHOES', y='WEIGHT (LBS)', title="Relation entre Poids et Taille")
+            st.plotly_chart(fig2)
 
 # Section 3 : Statistiques descriptives
 elif menu == "Statistiques descriptives":
-    st.title("Statistiques descriptives des données NBA Combine")
-    st.write("### Statistiques générales")
+    st.title("📈 Statistiques descriptives des données NBA Combine")
+    st.write("### 📊 Statistiques générales")
     st.write(data.describe())
 
-    # Distribution du Body Fat %
-    st.write("### Distribution du Body Fat %")
+    st.write("### 🏃‍♂️ Distribution du Body Fat %")
     if 'BODY FAT %' in data.columns:
-        fig4 = px.histogram(data, x='BODY FAT %', nbins=20, title="Distribution du Body Fat % des Joueurs", color_discrete_sequence=['#ff6347'])
-        st.plotly_chart(fig4, use_container_width=True)
+        fig3 = px.histogram(data, x='BODY FAT %', nbins=20, title="Distribution du Body Fat % des Joueurs")
+        st.plotly_chart(fig3)
