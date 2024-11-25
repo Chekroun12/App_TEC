@@ -115,25 +115,6 @@ elif menu == "Visualisations":
             fig2 = px.scatter(data, x='HEIGHT W/O SHOES', y='WEIGHT (LBS)', title="Relation entre Poids et Taille")
             st.plotly_chart(fig2)
 
-    # Graphique de la répartition de l'age
-    st.write("### 🎂 Répartition des âges des joueurs")
-    if 'AGE' in data.columns:
-        fig3 = px.histogram(data, x='AGE', nbins=15, title="Répartition des Âges des Joueurs NBA")
-        st.plotly_chart(fig3)
-
-    # Box plot pour analyser la répartition des poids selon les positions
-    st.write("### 📦 Répartition du Poids selon les Positions")
-    if 'POSITION' in data.columns and 'WEIGHT (LBS)' in data.columns:
-        fig4 = px.box(data, x='POSITION', y='WEIGHT (LBS)', title="Répartition du Poids selon les Positions")
-        st.plotly_chart(fig4)
-
-    # Heatmap des corrélations entre les caractéristiques physiques
-    st.write("### 🔥 Heatmap des Corrélations entre les Caractéristiques Physiques")
-    if all(col in data.columns for col in ['HEIGHT W/O SHOES', 'WEIGHT (LBS)', 'BODY FAT %', 'WINGSPAN']):
-        corr_matrix = data[['HEIGHT W/O SHOES', 'WEIGHT (LBS)', 'BODY FAT %', 'WINGSPAN']].corr()
-        fig5 = px.imshow(corr_matrix, title="Heatmap des Corrélations", color_continuous_scale='Viridis')
-        st.plotly_chart(fig5)
-
 # Section 3 : Statistiques descriptives
 elif menu == "Statistiques descriptives":
     st.title("📈 Statistiques descriptives des données NBA Combine")
@@ -142,5 +123,5 @@ elif menu == "Statistiques descriptives":
 
     st.write("### 🏃‍♂️ Distribution du Body Fat %")
     if 'BODY FAT %' in data.columns:
-        fig6 = px.histogram(data, x='BODY FAT %', nbins=20, title="Distribution du Body Fat % des Joueurs")
-        st.plotly_chart(fig6)
+        fig3 = px.histogram(data, x='BODY FAT %', nbins=20, title="Distribution du Body Fat % des Joueurs")
+        st.plotly_chart(fig3)
